@@ -1,0 +1,105 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<main>
+    <div class="px-4 py-5 my-5 text-center">
+        <h1 class="display-5 fw-bold text-body-emphasis">Tic Tac Toe</h1>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <button th:if="${object.isPlayer()}" type="button" class="btn btn-outline-primary" disabled>Player 1</button>
+                <button th:unless="${object.isPlayer()}" type="button" class="btn btn-outline-secondary" disabled>Player 2</button>
+            </div>
+        </div>
+        <form class="row py-3" method="POST" th:action="'play?size='+${object.getSize()}" novalidate>
+            <input type="hidden" th:value="${object.isPlayer()}" name="player">
+            <input type="hidden" th:value="${object.getStatus()}" name="status" id="status">
+            <div th:each="i, statI : ${object.getBoardSize()}">
+                <div class="row justify-content-center">
+                    <div th:each="j, statJ : ${i}" th:switch="${j}" class="col-1 border d-flex align-items-center justify-content-center" th:with="nameIdx='idx.'+${statI.index}+'.'+${statJ.index}">
+                        <button class="btn btn-link"
+                                th:case="0" th:id="'btn-'+${nameIdx}"
+                                th:onclick="'javascript:onChangeValue(this,' + ${object.isPlayer()} + ');'" type="submit">
+                            <img src="#"
+                             th:attr="src=@{/img/undescore.svg}" class="img-thumbnail border-0" style="min-height: 70%; padding: 0" alt="x"/></button>
+                        <img th:case="1" src="#"
+                             th:attr="src=@{/img/cross.svg}" class="img-thumbnail border-0" style="min-height: 70%" alt="x"/>
+                        <img th:case="2" src="#"
+                             th:attr="src=@{/img/circle.svg}" class="img-thumbnail border-0" style="min-height: 70%" alt="x"/>
+                        <input type="hidden" th:value="${j}" th:id="${nameIdx}" th:name="${nameIdx}">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+<!--    <div class="modal" id="player1-win" tabindex="-1">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-body">-->
+<!--                    <p>Player 1 Win</p>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-primary">Save changes</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="modal" id="player2-win" tabindex="-1">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-body">-->
+<!--                    <p>Player 2 Win</p>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-primary">Save changes</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <button type="button" id="result" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="display: none">
+        Result
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div th:switch="${object.getStatus()}" class="modal-body">
+                    <p th:case="1">Player 1 Win</p>
+                    <p th:case="2">Player 2 Win</p>
+                    <p th:case="-1">Game is Draw</p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" th:href="'play?size='+${object.getSize()}" role="button">Rematch Game</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- import jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+    window.onload = () => {
+        const status = document.getElementById('status');
+        if (status.value != 0) $('#result').click();
+    }
+
+    function onChangeValue(obj, player){
+        const name = obj.id.split('-')[1];
+        document.getElementById(name).value = player? 1 : 2;
+    }
+</script>
+</body>
+</html>

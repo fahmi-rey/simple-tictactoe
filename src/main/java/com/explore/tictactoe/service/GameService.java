@@ -14,7 +14,6 @@ import java.util.Map;
 public abstract class GameService {
     public abstract Game createGame(int size);
     public abstract Game playGame(Map<String, String> request);
-
     public abstract Game checkWinner(Game game, boolean isEmpty);
 
     public List<List<Integer>> reCreateBoard(Map<String, String> request, int size) {
